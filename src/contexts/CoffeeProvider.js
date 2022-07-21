@@ -5,6 +5,8 @@ import CoffeeContext from './CoffeeContext';
 export const CoffeeProvider = (props) => {
 
     const [ coffee, setCoffee ] = useState([]);
+    
+
     const baseUrl =  'http://localhost:3000/api/coffee/';
 
     useEffect(() => {
@@ -19,11 +21,12 @@ export const CoffeeProvider = (props) => {
     }
 
     function getCoffee(id){
-        return axios.get(baseUrl + ':id', coffee)
+        return axios.get( baseUrl + id)
             .then(response => {
                 return new Promise(resolve => resolve(response.data));
             }
         );
+        //return coffee.find(coffee => coffee.id === parseInt(id))
     }
 
     function addCoffee(coffee){
@@ -39,12 +42,12 @@ export const CoffeeProvider = (props) => {
         );
     }
 
-    function editCoffee(coffee){
+    function editCoffee(coffee, id){
         let myHeaders = {
             Authorization: `Bearer ${localStorage.getItem('myCoffeeToken')}`
         };
 
-        return axios.put(baseUrl, coffee, { headers: myHeaders })
+        return axios.put(baseUrl + id, coffee, { headers: myHeaders })
             .then(response => {
                 getAllCoffee();
                 return new Promise(resolve => resolve(response.data));
@@ -53,7 +56,16 @@ export const CoffeeProvider = (props) => {
     }
 
     function deleteCoffee(id){
+        let myHeaders = {
+            Authorization: `Bearer ${localStorage.getItem('myCoffeeToken')}`
+        };
 
+        return axios.delete(baseUrl + id, { headers: myHeaders })
+            .then(response => {
+                getAllCoffee();
+                return new Promise(resolve => resolve(response.data));
+            }
+        );
     }
 
     return (
